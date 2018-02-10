@@ -29,5 +29,5 @@ export AWS_DEFAULT_REGION="your-region"
 
 And then run:
 ```
-curl https://raw.githubusercontent.com/matheusmmo/ecr-docker-image-downloader/master/ecr_docker_image_downloader.sh && chmod +x ecr_docker_image_downloader.sh && ./ecr_docker_image_downloader.sh
+curl -O https://raw.githubusercontent.com/matheusmmo/ecr-docker-image-downloader/master/ecr_docker_image_downloader.sh && chmod +x ecr_docker_image_downloader.sh && ./ecr_docker_image_downloader.sh
 ```
