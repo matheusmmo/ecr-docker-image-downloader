@@ -2,8 +2,6 @@
 
 set -e
 
-[[ -x "$(command -v jq)" ]] || (echo "You need to have jq installed. Go to https://stedolan.github.io/jq/download to see how you can install it." >&2; exit 1;)
-
 [[ -x "$(command -v aws)" ]] || pip install --upgrade --user awscli 
 
 [[ -d "$HOME/.aws" ]] || mkdir $HOME/.aws
@@ -20,16 +18,16 @@ region = $AWS_DEFAULT_REGION" > $HOME/.aws/config
 
 eval $(aws ecr get-login --no-include-email)
 
-echo $(aws ecr describe-repositories)
-exit;
-
-repositories="$(aws ecr describe-repositories | jq '.repositories')"
+repositories=`aws ecr describe-repositories`;
+repositories=`docker run --rm -e R="$repositories" matheusmmo/docker-jq sh -c 'echo $R | jq .repositories'`;
 
 options=()
 i=0;
-for row in $(echo "${repositories}" | jq -r '.[] | @base64'); do  
+for row in `docker run --rm -e R="$repositories" matheusmmo/docker-jq sh -c 'echo $R | jq -r ".[] | @base64"'`; do
+  row=`echo $row | python -m base64 -d`
+
   _jq() {
-   echo ${row} | base64 --decode | jq -r ${1}
+    docker run --rm -e R="$row" -e P="${1}" matheusmmo/docker-jq sh -c 'echo $R | jq -r $P';
   }
 
   options[i]=$(_jq '.repositoryUri')
