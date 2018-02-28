@@ -61,5 +61,5 @@ done
 echo "$msg"
 
 for i in ${!options[@]}; do
-  [[ "${choices[i]}" ]] && docker pull $options;
+  [[ "${choices[i]}" ]] && docker pull "${options[i]}";
 done
